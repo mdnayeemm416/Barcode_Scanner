@@ -1,8 +1,27 @@
 import 'package:barcode_scanner/Features/Login/signin.dart';
+import 'package:barcode_scanner/Firebase/FirebaseAuth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  String email = "";
+  String password = '';
+
+  void signUpUser() async {
+    context.read<FirebaseAuthMethods>().signUpWithEmail(
+          email: email,
+          password: password,
+          context: context,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +105,16 @@ class SignUp extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               MediaQuery.of(context).size.width * 0.1),
                           child: TextFormField(
+                            validator: (value) {
+                              if (value == null ||
+                                  value.toString().length <= 3) {
+                                return 'Please use a strong Password';
+                              }
+                              return null;
+                            },
+                            onSaved: (newValue) {
+                              password = newValue!;
+                            },
                             decoration: InputDecoration(
                               hintText: "Password",
                               hintStyle: TextStyle(
@@ -118,7 +147,6 @@ class SignUp extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            keyboardType: TextInputType.visiblePassword,
                           ),
                         ),
                       ),
@@ -194,6 +222,9 @@ class SignUp extends StatelessWidget {
                               }
                               return null;
                             },
+                            onSaved: (newValue) {
+                              email = newValue!;
+                            },
                           ),
                         ),
                       ),
@@ -253,7 +284,7 @@ class SignUp extends StatelessWidget {
                               primary: Colors.purple.shade200,
                               onPrimary: Colors.white,
                             ),
-                            onPressed: () {},
+                            onPressed: signUpUser,
                             child: Text("Sign Up")),
                       ),
                       SizedBox(height: 10),

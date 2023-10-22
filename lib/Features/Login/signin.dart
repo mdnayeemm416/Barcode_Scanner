@@ -1,10 +1,28 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:barcode_scanner/Features/Login/signup.dart';
+import 'package:barcode_scanner/Firebase/FirebaseAuth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   const SignIn({super.key});
+
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void loginUser() {
+    context.read<FirebaseAuthMethods>().loginWithEmail(
+          email: emailController.text,
+          password: passwordController.text,
+          context: context,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +70,7 @@ class SignIn extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               MediaQuery.of(context).size.width * 0.1),
                           child: TextFormField(
+                            controller: emailController,
                             decoration: InputDecoration(
                               hintText: "Email",
                               hintStyle: TextStyle(
@@ -105,15 +124,6 @@ class SignIn extends StatelessWidget {
                               ),
                             ),
                             keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'This field cannot be empty';
-                              }
-                              if (!value.contains('@')) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                       ),
@@ -127,6 +137,7 @@ class SignIn extends StatelessWidget {
                           borderRadius: BorderRadius.circular(
                               MediaQuery.of(context).size.width * 0.1),
                           child: TextFormField(
+                            controller: passwordController,
                             decoration: InputDecoration(
                               hintText: "Password",
                               hintStyle: TextStyle(
@@ -180,15 +191,6 @@ class SignIn extends StatelessWidget {
                               ),
                             ),
                             keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'This field cannot be empty';
-                              }
-                              if (!value.contains('@')) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                       ),
@@ -202,7 +204,7 @@ class SignIn extends StatelessWidget {
                               primary: Colors.purple.shade200,
                               onPrimary: Colors.white,
                             ),
-                            onPressed: () {},
+                            onPressed: loginUser,
                             child: Text("Sign Ip")),
                       ),
                       TextButton(
